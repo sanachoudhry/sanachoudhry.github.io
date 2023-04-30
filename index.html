@@ -4,15 +4,20 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sana Choudhry's INST377 Final Project</title>
+    <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
-    <div> <!--wrapper-->
+    <div class="wrapper"> <!--wrapper-->
         <header><h1>Hospitals in Prince George's County, Maryland</h1></header>
-        <div> <!--container-->
-            <div>
+        <div class="container"> <!--container-->
+            <div class="left_section box">
                 <!--left section box-->
-                <form action="https://data.princegeorgescountymd.gov/api/views/4juk-b4qs/rows.json">
-                    
+                <p>Click below to see local hospitals.</p>
+                <form action="https://data.princegeorgescountymd.gov/api/views/4juk-b4qs/rows.json" class="box main_form">
+                    <div>
+                        <label for="resto">Filter Hospitals</label>
+                        <input type="text" name="resto" id="resto"/>
+                    </div>
                 </form>
                 <div>
                     <!--buttons-->
