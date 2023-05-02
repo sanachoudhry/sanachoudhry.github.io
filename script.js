@@ -48,6 +48,7 @@ function getRandomInclusive(min, max) {
   }
   
   async function mainEvent() { // the async keyword means we can make API requests
+    const carto = initMap();
     const mainForm = document.querySelector('.main_form'); // This class name needs to be set on your form before you can listen for an event on it
     const filterDataButton = document.querySelector('#filter');
     const loadDataButton = document.querySelector('#data_load');
@@ -57,7 +58,6 @@ function getRandomInclusive(min, max) {
     const loadAnimation = document.querySelector('#data_load_animation');
     loadAnimation.style.display = 'none';
 
-    const carto = initMap();
 
     let currentList = [];
   
