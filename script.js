@@ -3,11 +3,10 @@ function getRandomInclusive(min, max) {
     const newMax = Math.floor(max);
     return Math.floor(Math.random() * (newMax - newMin + 1) + min);
 }
-  }
   
   function injectHTML(list) {
     console.log('fired injectHTML')
-    const target = document.querySelector('#restaurant_list');
+    const target = document.querySelector('#hosp_list');
     target.innerHTML = '';
     list.forEach((item) =>  {
       const str = `<li>${item.name}</li>`;
@@ -108,4 +107,4 @@ function getRandomInclusive(min, max) {
      
     };
   
-  document.addEventListener('DOMContentLoaded', async () => mainEvent()); // the async keyword means we can make API requests
+  document.addEventListener('DOMContentLoaded', async () => mainEvent()); 
