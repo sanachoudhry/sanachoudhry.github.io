@@ -3,35 +3,39 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Sana Choudhry's INST377 Final Project</title>
+    <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
-    <div> <!--wrapper-->
-        <header><h1>Crime in PG County, Maryland</h1></header>
-        <div> <!--container-->
-            <div>
+    <div class="wrapper"> <!--wrapper-->
+        <header><h1>Hospitals in Prince George's County, Maryland</h1></header>
+        <div class="container"> <!--container-->
+            <div class="left_section box">
                 <!--left section box-->
-                <form action="https://data.princegeorgescountymd.gov/api/views/u7td-kf38/rows.json">
-                    
+                <p>Click below to see local hospitals.</p>
+                <form action="https://data.princegeorgescountymd.gov/api/views/4juk-b4qs/rows.json" class="box main_form">
+                    <div> <!--buttons-->
+                        <label for="resto">Filter Hospitals</label>
+                        <input type="text" name="resto" id="resto"/>
+                    </div>
+                    <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
+                    <button type="submit" id="resto">Find Hospitals</button>
                 </form>
-                <div>
-                    <!--buttons-->
+            </div>
+            <div class="right_section box"> <!--middle section box w/ map-->
+                <h3>Hospital Map</h3>
+                <div id="map"></div>
+            </div>
+
+            <div class="right_section box">
+                <h3>List of Hospitals</h3>
+                <div class="box" id="hosp_list">
+                    A list of hospitals from the PG County database
                 </div>
-                <div><div></div><div></div><div></div><div></div></div>
-                <!--button-->
-            </div>
-
-            <div>
-                <!--middle section box w/ map-->
-            </div>
-
-            <div>
-                <!--right section box-->
-            </div>
-        </div>
     </div>
-    <footer>
-        
+    <footer class="footer">
+        <a href="https://github.com/sanachoudhry/sanachoudhry.github.io" target="_blank" rel="noopener noreferrer">Sana Choudhry</a>
     </footer>
+    <script src=="script.js"></script>
 </body>
 </html>
