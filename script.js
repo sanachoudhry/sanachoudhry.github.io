@@ -4,107 +4,95 @@ function getRandomInclusive(min, max) {
     return Math.floor(Math.random() * (newMax - newMin + 1) + min);
 }
   
-  function injectHTML(list) {
-    console.log('fired injectHTML')
-    const target = document.querySelector('#hosp_list');
-    target.innerHTML = '';
-    list.forEach((item) =>  {
-      const str = `<li>${item.name}</li>`;
-      target.innerHTML += str
-    })
-  }
+function injectHTML(list) {
+  console.log('fired injectHTML')
+  const target = document.querySelector('#hosp_list');
+  target.innerHTML = '';
+  list.forEach((item) =>  {
+    const str = `<li>${item.name}</li>`;
+    target.innerHTML += str
+  });
+}
   
-  function filterList(list, query) {
-    return list.filter((item) => {
-      const lowerCaseName = item.name.toLowerCase();
-      const lowerCaseQuery = query.toLowerCase();
-      return lowerCaseName.includes(lowerCaseQuery);
-    })
-  }
+function thruHospitals(list) {
+  console.log('fired hospitals list');
+  const range = [...Array(15).keys()];
+  const newArray = range.map((item, index) => {
+    const idx = getRandomIntInclusive(0, list.length - 1);
+    return list[idx]
+  });
+  return newArray;
+}
+
+function filterList(list, query) {
+  return list.filter((item) => {
+    const lowerCaseName = item.name.toLowerCase();
+    const lowerCaseQuery = query.toLowerCase();
+    return lowerCaseName.includes(lowerCaseQuery);
+  });
+}
+
+function initMap() {
+  console.log('initMap');
+  const carto = L.map('map').setView([38.98, -76.93], 13);
+  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+  }).addTo(carto);
+  return carto;
+}
+
+function markerPlace(array, carto) {
+  const markers =[];
+  carto.eachLayer((layer) => {
+    if (layer instanceof L.Marker) {
+      markers.push(layer);
+    }
+  });
+  markers.forEach((marker) => {
+   carto.removeLayer(marker);
+  });
+  array.forEach((item) => {
+   const marker = L.marker([item.latitude, item.longitude]).addTo(carto);
+   marker.bindPopup('<b>${item.name}</b><br>${item.address}');
+  });
+}
+
+async function getData() {
+  const url = 'https://data.princegeorgescountymd.gov/api/views/4juk-b4qs/rows.json';
+  const data = await fetch(url);
+  const json = await data.json();
+  const reply = json.filter((item) => Boolean(item.clearance_code_inc_type)).filter((item) => Boolean(item.clearance_code_inc_type));
+  return reply;
+}
   
-  function cutRestaurantList() {
-    console.log('fired cut list');
-    const range = [...Array(15).keys()];
-    return newArray = range.map((item, index) => {
-      const idx = getRandomIntInclusive(0, list.length - 1);
-      return list[index]
-    })
-  }
+async function mainEvent() { // the async keyword means we can make API requests
+  const carto = initMap();
+  const form = document.querySelector('.main_form'); // This class name needs to be set on your form before you can listen for an event on it
+  const submit = document.querySelector('#get-resto');
+  const loadAnimation = document.querySelector('.lds-ellipsis');
+  submit.style.display = 'none';
 
-  function initMap() {
-    const carto = L.map('map').setView([38.98, -76.93], 13);
-    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 19,
-        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-    }).addTo(carto);
-    return carto;
-  }
-
-  function markerPlace(array, map) {
-    console.log('array for markers', array);
-    array.forEach((item) => {
-       console.log('markerPlace', item); 
-    })
-  }
-  
-  async function mainEvent() { // the async keyword means we can make API requests
-    const carto = initMap();
-    const mainForm = document.querySelector('.main_form'); // This class name needs to be set on your form before you can listen for an event on it
-    const filterDataButton = document.querySelector('#filter');
-    const loadDataButton = document.querySelector('#data_load');
-    const generateListButton = document.querySelector('#generate');
-    const textField = document.querySelector('#resto')
-
-    const loadAnimation = document.querySelector('#data_load_animation');
-    loadAnimation.style.display = 'none';
-
-
-    let currentList = [];
-  
-  
-    loadDataButton.addEventListener('click', async (submitEvent) => { // async has to be declared on every function that needs to "await" something
-      console.log('form submission'); // this is substituting for a "breakpoint"
-      loadAnimation.style.display = 'inline-block';
     
-      const results = await fetch('https://data.princegeorgescountymd.gov/resource/umjn-t2iz.json');
-  
-      currentList = await results.json();
-      console.table(currentList);
-      injectHTML(currentList);
-    })
-  
-    filterDataButton.addEventListener('click', (event) => { 
-      console.log('clicked filterButton');
-  
-      const formData = new FormData(mainForm);
-      const formProps = Object.fromEntries(formData);
-  
-      console.log(formProps);
-      const newList = filterList(currentList, formProps.resto);
-    
-      console.log(newList);
-      injectHTML(newList);
-    })
-  
-    generateListButton.addEventListener('click',(event) => {
-      console.log('generate new list');
-      const restaurantsList = cutRestaurantList(currentList);
-      console.log(restaurantsList);
-      injectHTML(restaurantsList);
-      markerPlace(currentList, carto);
-    })
-    
-    textField.addEventListener('input', (event) => {
-        console.log('input', event.target.value);
-        const newList = filterList(currentList, formProps.resto);
-        console.log(newList);
-        injectHTML(newList);
-        markerPlace(newList, carto);
-    })
 
-      const arrayFromJson = await results.json();
-      console.table(arrayFromJson.data); // this is called "dot notation"
-     
-    };
+
+  let currentList = [];
+  
+  
+  form.addEventListener('input', (event) => { // async has to be declared on every function that needs to "await" something
+    const filteredList = filterList(currentList, event.target.value);
+    injectHTML(filteredList);
+    markerPlace(filteredList, carto);
+  });
+
+  form.addEventListener('submit', (submitEvent) => { 
+    submitEvent.preventDefault();
+    const data = await getData();
+    const hospitalNames = data.map((item) => ({ name: item.facility_name}));
+    currentList = thruHospitals(results);
+    injectHTML(currentList);
+    markerPlace(currentList, carto);
+  });
+}
   
   document.addEventListener('DOMContentLoaded', async () => mainEvent()); 
