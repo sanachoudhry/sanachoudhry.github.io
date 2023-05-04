@@ -18,7 +18,7 @@ function thruHospitals(list) {
   console.log('fired hospitals list');
   const range = [...Array(15).keys()];
   const newArray = range.map((item, index) => {
-    const idx = getRandomIntInclusive(0, list.length - 1);
+    const idx = getRandomInclusive(0, list.length - 1);
     return list[idx]
   });
   return newArray;
@@ -53,8 +53,11 @@ function markerPlace(array, carto) {
    carto.removeLayer(marker);
   });
   array.forEach((item) => {
-   const marker = L.marker([item.latitude, item.longitude]).addTo(carto);
-   marker.bindPopup('<b>${item.name}</b><br>${item.address}');
+   const marker = L.marker([item.latitude, item.longitude]).addTo(marker);
+   marker.bindPopup(`<b>${item.name}</b><br>${item.address}`);
+   const {coordinates} = item.geocoded_column_1;
+
+   L.marker([coordinates[1], coordinates[0]]).addTo(carto)
   });
 }
 
@@ -70,13 +73,16 @@ async function mainEvent() { // the async keyword means we can make API requests
   const carto = initMap();
   const form = document.querySelector('.main_form'); // This class name needs to be set on your form before you can listen for an event on it
   const submit = document.querySelector('#get-resto');
-  const loadAnimation = document.querySelector('.lds-ellipsis');
-  submit.style.display = 'none';
+  submit.style.display = 'inline-block';
 
     
 
 
   let currentList = [];
+
+  submit.addEventListener('click', async () => {
+    form.dispatchEvent(new Event('submit'));
+  });
   
   
   form.addEventListener('input', (event) => { // async has to be declared on every function that needs to "await" something
@@ -85,14 +91,20 @@ async function mainEvent() { // the async keyword means we can make API requests
     markerPlace(filteredList, carto);
   });
 
-  form.addEventListener('submit', (submitEvent) => { 
+  form.addEventListener('submit', async (submitEvent) => { 
     submitEvent.preventDefault();
     const data = await getData();
     const hospitalNames = data.map((item) => ({ name: item.facility_name}));
-    currentList = thruHospitals(results);
+    currentList = thruHospitals(hospitalNames).slice(0,10);
     injectHTML(currentList);
     markerPlace(currentList, carto);
+
+    const results = await fetch(
+      "https://data.princegeorgescountymd.gov/api/views/4juk-b4qs/rows.json"
+    );
   });
 }
   
-  document.addEventListener('DOMContentLoaded', async () => mainEvent()); 
+document.addEventListener('DOMContentLoaded', async () => {
+  await mainEvent()
+}); 
