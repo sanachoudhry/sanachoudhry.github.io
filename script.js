@@ -10,12 +10,12 @@ function injectHTML(list) {
   target.innerHTML = '';
   list.forEach((item) =>  {
     const str = `<li>${item.name}</li>`;
-    target.innerHTML += str
+    target.innerHTML += str;
   });
 }
   
-function thruHospitals(list) {
-  console.log('fired hospitals list');
+function selectRandomHospitals(list) {
+  console.log('fired selectRandomHospitals');
   const range = [...Array(15).keys()];
   const newArray = range.map((item, index) => {
     const idx = getRandomInclusive(0, list.length - 1);
@@ -55,7 +55,7 @@ function markerPlace(array, carto) {
   array.forEach((item) => {
    const marker = L.marker([item.latitude, item.longitude]).addTo(marker);
    marker.bindPopup(`<b>${item.name}</b><br>${item.address}`);
-   const {coordinates} = item.geocoded_column_1;
+   const { coordinates } = item.geocoded_column_1;
 
    L.marker([coordinates[1], coordinates[0]]).addTo(carto)
   });
@@ -65,30 +65,55 @@ async function getData() {
   const url = 'https://data.princegeorgescountymd.gov/api/views/4juk-b4qs/rows.json';
   const data = await fetch(url);
   const json = await data.json();
-  const reply = json.filter((item) => Boolean(item.clearance_code_inc_type)).filter((item) => Boolean(item.clearance_code_inc_type));
+  const reply = json
+      .filter((item) => Boolean(item.clearance_code_inc_type))
+      .filter((item) => Boolean(item.clearance_code_inc_type));
   return reply;
 }
   
 async function mainEvent() { // the async keyword means we can make API requests
   const carto = initMap();
-  const form = document.querySelector('.main_form'); // This class name needs to be set on your form before you can listen for an event on it
   const submit = document.querySelector('#get-resto');
+  const loader = document.querySelector('.lds-ellipsis');
+  const filterButton = document.querySelector('#filterButton');
+
+  let currentList = [];
+  
+  submit.addEventListener('click', async (event) => {
+    event.preventDefault();
+    loader.classList.remove('lds-ellipsis_hidden');
+    const data = await getData();
+    const hospitalNames = data.map((item) => ({name: item.facility_name }));
+    currentList = selectRandomHospitals(hospitalNames).slice(0,10);
+    injectHTML(currentList);
+    markerPlace(currentList, carto);
+    loader.classList.add('lds-ellipsis_hidden');
+  });
+
+  const restoInput = document.querySelector('#resto');
+  restoInput.addEventListener('input', (event) => {
+    const filteredList = filterList(currentList, event.target.value);
+    injectHTML(filteredList);
+    markerPlace(filteredList, carto);
+  })
+
+  const form = document.querySelector('.main_form');
+  form.addEventListener('submit', (event) => {
+    event.preventDefault();
+  })
+  
+
 
   filterButton.addEventListener('click', (event) => {
     event.preventDefault();
     form.dispatchEvent(new Event('submit'));
   });
-  
+
   submit.style.display = 'inline-block';
 
-    
+  
 
-
-  let currentList = [];
-
-  submit.addEventListener('click', async () => {
-    form.dispatchEvent(new Event('submit'));
-  });
+  
   
   
   form.addEventListener('input', (event) => { // async has to be declared on every function that needs to "await" something
@@ -99,15 +124,13 @@ async function mainEvent() { // the async keyword means we can make API requests
 
   form.addEventListener('submit', async (submitEvent) => { 
     submitEvent.preventDefault();
-    const data = await getData();
-    const hospitalNames = data.map((item) => ({ name: item.facility_name}));
-    currentList = thruHospitals(hospitalNames).slice(0,10);
-    injectHTML(currentList);
-    markerPlace(currentList, carto);
 
-    const results = await fetch(
-      "https://data.princegeorgescountymd.gov/api/views/4juk-b4qs/rows.json"
-    );
+    const searchInput = document.querySelector('#resto');
+    const query = searchInput.value;
+
+    const filteredList = filterList(currentList, query);
+    injectHTML(filteredList);
+    markerPlace(filteredList, carto);
   });
 }
   
