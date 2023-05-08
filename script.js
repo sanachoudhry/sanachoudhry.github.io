@@ -105,6 +105,6 @@ async function mainEvent() { // the async keyword means we can make API requests
   });
 }
   
-document.addEventListener('DOMContentLoaded', async () => {
-  await mainEvent()
+document.addEventListener('DOMContentLoaded', async function() {
+  await mainEvent();
 }); 
