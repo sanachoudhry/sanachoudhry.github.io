@@ -73,6 +73,12 @@ async function mainEvent() { // the async keyword means we can make API requests
   const carto = initMap();
   const form = document.querySelector('.main_form'); // This class name needs to be set on your form before you can listen for an event on it
   const submit = document.querySelector('#get-resto');
+
+  filterButton.addEventListener('click', (event) => {
+    event.preventDefault();
+    form.dispatchEvent(new Event('submit'));
+  });
+  
   submit.style.display = 'inline-block';
 
     
