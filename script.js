@@ -9,7 +9,7 @@ function injectHTML(list) {
   const target = document.querySelector('#hosp_list');
   target.innerHTML = '';
   list.forEach((item) =>  {
-    const str = `<li>${item.name}</li>`;
+    const str = `<li>${item.facility_name}</li>`;
     target.innerHTML += str;
   });
 }
@@ -17,7 +17,7 @@ function injectHTML(list) {
 function selectRandomHospitals(list) {
   console.log('fired selectRandomHospitals');
   const range = [...Array(15).keys()];
-  const newArray = range.map((item, index) => {
+  const newArray = range.map((item) => {
     const idx = getRandomInclusive(0, list.length - 1);
     return list[idx]
   });
@@ -26,7 +26,7 @@ function selectRandomHospitals(list) {
 
 function filterList(list, query) {
   return list.filter((item) => {
-    const lowerCaseName = item.name.toLowerCase();
+    const lowerCaseName = item.facility_name.toLowerCase();
     const lowerCaseQuery = query.toLowerCase();
     return lowerCaseName.includes(lowerCaseQuery);
   });
@@ -62,13 +62,12 @@ function markerPlace(array, carto) {
 }
 
 async function getData() {
-  const url = 'https://data.princegeorgescountymd.gov/api/views/4juk-b4qs/rows.json';
+  const url = 'https://data.princegeorgescountymd.gov/resource/4juk-b4qs.json';
   const data = await fetch(url);
   const json = await data.json();
-  const reply = json
-      .filter((item) => Boolean(item.clearance_code_inc_type))
-      .filter((item) => Boolean(item.clearance_code_inc_type));
-  return reply;
+   const reply = json
+       .filter((item) => Boolean(item.facility_name));
+   return reply;
 }
   
 async function mainEvent() { // the async keyword means we can make API requests
@@ -110,10 +109,6 @@ async function mainEvent() { // the async keyword means we can make API requests
   });
 
   submit.style.display = 'inline-block';
-
-  
-
-  
   
   
   form.addEventListener('input', (event) => { // async has to be declared on every function that needs to "await" something
@@ -134,6 +129,4 @@ async function mainEvent() { // the async keyword means we can make API requests
   });
 }
   
-document.addEventListener('DOMContentLoaded', async function() {
-  await mainEvent();
-}); 
+document.addEventListener("DOMContentLoaded", async () => mainEvent());
