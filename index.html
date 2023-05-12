@@ -4,38 +4,57 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sana Choudhry's INST377 Final Project</title>
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css"
+    integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI="
+    crossorigin=""/>
+
     <link rel="stylesheet" href="style.css"/>
+
+    <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"
+    integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM="
+    crossorigin=""></script>
+
 </head>
 <body>
     <div class="wrapper"> <!--wrapper-->
-        <header><h1>Hospitals in Prince George's County, Maryland</h1></header>
+        <header class="header"><h1>Hospitals in Prince George's County, Maryland
+            <br>
+            <a href="about.html">About</a>
+        </h1></header>
         <div class="container"> <!--container-->
             <div class="left_section box">
                 <!--left section box-->
                 <p>Click below to see local hospitals.</p>
-                <form action="https://data.princegeorgescountymd.gov/api/views/4juk-b4qs/rows.json" class="box main_form">
+                <form class="box main_form">
                     <div> <!--buttons-->
                         <label for="resto">Filter Hospitals</label>
                         <input type="text" name="resto" id="resto"/>
+                        <button type="button" id="get-resto">Find Hospitals</button>
                     </div>
-                    <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
-                    <button type="submit" id="resto">Find Hospitals</button>
+                    <div class = "lds-ellipsis" id="data_load_animation">
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                    </div>
                 </form>
             </div>
             <div class="right_section box"> <!--middle section box w/ map-->
                 <h3>Hospital Map</h3>
                 <div id="map"></div>
             </div>
-
             <div class="right_section box">
                 <h3>List of Hospitals</h3>
                 <div class="box" id="hosp_list">
                     A list of hospitals from the PG County database
                 </div>
+            </div>
+        </div>
     </div>
     <footer class="footer">
         <a href="https://github.com/sanachoudhry/sanachoudhry.github.io" target="_blank" rel="noopener noreferrer">Sana Choudhry</a>
     </footer>
-    <script src=="script.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
