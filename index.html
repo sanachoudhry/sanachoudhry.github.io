@@ -4,17 +4,24 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sana Choudhry's INST377 Final Project</title>
-    <link rel="stylesheet" href="style.css"/>
+
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css"
     integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI="
     crossorigin=""/>
+
+    <link rel="stylesheet" href="style.css"/>
+
     <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"
     integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM="
     crossorigin=""></script>
+
 </head>
 <body>
     <div class="wrapper"> <!--wrapper-->
-        <header><h1>Hospitals in Prince George's County, Maryland</h1></header>
+        <header class="header"><h1>Hospitals in Prince George's County, Maryland
+            <br>
+            <a href="about.html">About</a>
+        </h1></header>
         <div class="container"> <!--container-->
             <div class="left_section box">
                 <!--left section box-->
@@ -23,9 +30,9 @@
                     <div> <!--buttons-->
                         <label for="resto">Filter Hospitals</label>
                         <input type="text" name="resto" id="resto"/>
-                        <button type="submit" id="get-resto" class="filterButton">Find Hospitals</button>
+                        <button type="button" id="get-resto">Find Hospitals</button>
                     </div>
-                    <div class="lds-ellipsis lds-ellipsis_hidden">
+                    <div class = "lds-ellipsis" id="data_load_animation">
                         <div></div>
                         <div></div>
                         <div></div>
